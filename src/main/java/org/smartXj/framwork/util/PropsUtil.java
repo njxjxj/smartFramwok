@@ -71,11 +71,10 @@ public final class PropsUtil {
     }
 
     public static int getInt(Properties properties, String key, int defaultVlaue) {
-//        int value=defaultVlaue;
-//        if(properties.containsKey(key))
-//        {
-//            value=CastU
-//        }
-        return 0;
+        int value = defaultVlaue;
+        if (properties.containsKey(key)) {
+            value = Integer.parseInt(properties.getProperty(key));
+        }
+        return value;
     }
 }

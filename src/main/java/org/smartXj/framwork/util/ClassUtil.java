@@ -56,6 +56,7 @@ public final class ClassUtil {
     public static Set<Class<?>> getClassSet(String packageName) {
         Set<Class<?>> classSet = new HashSet<Class<?>>();
         try {
+            //这里通过当前线程类加载器获取该包下所有文件URL
             Enumeration<URL> urls = getClassLoader().getResources(packageName.replace(".", "/"));
             while (urls.hasMoreElements()) {
                 URL url = urls.nextElement();
@@ -63,8 +64,9 @@ public final class ClassUtil {
                     String protocol = url.getProtocol();
                     if (protocol.equals("file")) {//直接从文件获取
                         String packgePath = url.getPath().replace("%20", "");
+                        //循环从文件中加载（考虑文件是个文件夹的情况）
                         addClass(classSet,packgePath,packageName);
-                    } else if (protocol.equals("jar"))//从jar包中获取
+                    } else if (protocol.equals("jar"))//从jar包中获取（假如文件中有jra包的处理）
                     {
                         JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
                         if (jarURLConnection != null) {
@@ -114,7 +116,7 @@ public final class ClassUtil {
                      className=packageName+"."+className;
                 }
                 doAddClass(classSet,className);
-            }else
+            }else//如果是个文件夹则递归查找文件
             {
                 String subPackagePath=fileName;
                 if(StringUtil.isNotEmpty(packagePath))

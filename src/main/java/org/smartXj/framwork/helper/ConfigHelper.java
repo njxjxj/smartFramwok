@@ -1,5 +1,6 @@
-package org.smartXj.framwork;
+package org.smartXj.framwork.helper;
 
+import org.smartXj.framwork.ConfigConstant;
 import org.smartXj.framwork.util.PropsUtil;
 
 import java.util.Properties;

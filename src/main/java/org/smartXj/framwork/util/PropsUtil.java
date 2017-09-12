@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * 配置文件工具类
+ */
 public final class PropsUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger("PropsUtil.class");
 

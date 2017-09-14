@@ -22,4 +22,19 @@ public class HelperLoader {
             ClassUtil.loadClass(cls.getName());
         }
     }
+
+    public static  void init2()
+    {
+        Class<?>[] classList={
+                ClassHelper.class,
+                BeanHelper.class,
+                IocHelper.class,
+                ControllerHelper.class
+        };
+
+        for (Class cls:classList)
+        {
+            ClassUtil.loadClass(cls.getName());
+        }
+    }
 }

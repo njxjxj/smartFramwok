@@ -47,6 +47,10 @@ public final class ClassUtil {
         return cls;
     }
 
+    public static Class<?> loadClass(String className) {
+        return loadClass(className, false);
+    }
+
     /**
      * 获取指定包名下所有类
      *
@@ -65,7 +69,7 @@ public final class ClassUtil {
                     if (protocol.equals("file")) {//直接从文件获取
                         String packgePath = url.getPath().replace("%20", "");
                         //循环从文件中加载（考虑文件是个文件夹的情况）
-                        addClass(classSet,packgePath,packageName);
+                        addClass(classSet, packgePath, packageName);
                     } else if (protocol.equals("jar"))//从jar包中获取（假如文件中有jra包的处理）
                     {
                         JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
@@ -77,7 +81,7 @@ public final class ClassUtil {
                                 String jarEntryName = jarEntry.getName();
                                 if (jarEntryName.endsWith(".class")) {
                                     String className = jarEntryName.substring(0, jarEntryName.lastIndexOf(".")).replaceAll("/", ".");
-                                    doAddClass(classSet,className);//开始加载类
+                                    doAddClass(classSet, className);//开始加载类
                                 }
                             }
                         }
@@ -96,6 +100,7 @@ public final class ClassUtil {
 
     /**
      * 针对包下的类加载
+     *
      * @param classSet
      * @param packagePath
      * @param packageName
@@ -107,28 +112,24 @@ public final class ClassUtil {
             }
         });
         for (File file : files) {
-            String fileName=file.getName();
-            if(file.isFile())
+            String fileName = file.getName();
+            if (file.isFile()) {
+                String className = fileName.substring(0, fileName.lastIndexOf("."));
+                if (StringUtil.isNotEmpty(packageName)) {
+                    className = packageName + "." + className;
+                }
+                doAddClass(classSet, className);
+            } else//如果是个文件夹则递归查找文件
             {
-                String className=fileName.substring(0,fileName.lastIndexOf("."));
-                if(StringUtil.isNotEmpty(packageName))
-                {
-                     className=packageName+"."+className;
+                String subPackagePath = fileName;
+                if (StringUtil.isNotEmpty(packagePath)) {
+                    subPackagePath = packagePath + "/" + subPackagePath;
                 }
-                doAddClass(classSet,className);
-            }else//如果是个文件夹则递归查找文件
-            {
-                String subPackagePath=fileName;
-                if(StringUtil.isNotEmpty(packagePath))
-                {
-                    subPackagePath=packagePath+"/"+subPackagePath;
+                String subPackageName = fileName;
+                if (StringUtil.isNotEmpty(packageName)) {
+                    subPackagePath = packageName + "." + subPackageName;
                 }
-                String subPackageName=fileName;
-                if(StringUtil.isNotEmpty(packageName))
-                {
-                    subPackagePath=packageName+"."+subPackageName;
-                }
-                addClass(classSet,subPackagePath,subPackageName);
+                addClass(classSet, subPackagePath, subPackageName);
             }
 
         }
@@ -136,6 +137,7 @@ public final class ClassUtil {
 
     /**
      * 类加载
+     *
      * @param classSet
      * @param className
      */

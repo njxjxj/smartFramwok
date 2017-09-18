@@ -2,18 +2,18 @@ package org.smartXj.framwork;
 
 import org.smartXj.framwork.bean.Handler;
 import org.smartXj.framwork.bean.Param;
+import org.smartXj.framwork.bean.View;
 import org.smartXj.framwork.helper.BeanHelper;
 import org.smartXj.framwork.helper.ConfigHelper;
 import org.smartXj.framwork.helper.ControllerHelper;
-import org.smartXj.framwork.util.CodecUtil;
-import org.smartXj.framwork.util.StreamUtil;
-import org.smartXj.framwork.util.StringUtil;
+import org.smartXj.framwork.util.*;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,8 +32,9 @@ public class DispatcherServlet extends HttpServlet {
         defaultServlet.addMapping(ConfigHelper.getAppAssetPath() + "*");
     }
 
+
     @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //获取请求方法与请求路径
         String requestMethod = req.getMethod();
         String requestPath = req.getPathInfo();
@@ -51,12 +52,41 @@ public class DispatcherServlet extends HttpServlet {
                 String parmaValue = req.getParameter(parmaName);
                 paramMap.put(parmaName, parmaValue);
             }
-            String  body= CodecUtil.decodeURL(StreamUtil.getString(req.getInputStream()));
-            Param param = new Param(paramMap);
-            if(StringUtil.isNotEmpty(body))
-            {
-                String[] params=StringUtil.splitString(body,"&");
+            String body = CodecUtil.decodeURL(StreamUtil.getString(req.getInputStream()));
+
+
+            //针对GET提交的参数
+            if (StringUtil.isNotEmpty(body)) {
+                String[] params = StringUtil.splitString(body, "&");
+                if (ArrayUtil.isNotEmpty(params)) {
+                    for (String param : params) {
+                        String[] array = StringUtil.splitString(param, "=");
+                        if (ArrayUtil.isNotEmpty(array) && array.length == 2) {
+                            String paramName = array[0];
+                            String paramValue = array[1];
+                            paramMap.put(paramName, paramValue);
+                        }
+                    }
+                }
             }
+            Param param = new Param(paramMap);
+            Method actionMethod = handler.getActionMethod();
+            //使用反射运行方法
+            Object result = ReflectionUtil.invokeMethod(controllerBean, actionMethod);
+            if (result instanceof View) {
+                View view = (View) result;
+                String path = view.getPath();
+                if (path.startsWith("/")) {
+                    resp.sendRedirect(req.getContextPath() + path);
+                } else {
+                    Map<String, Object> model = view.getModel();
+                    for (Map.Entry<String, Object> entry : model.entrySet()) {
+                        req.setAttribute(entry.getKey(), entry.getValue());
+                    }
+                    req.getRequestDispatcher(ConfigHelper.getAppJspPath() + path).forward(req, resp);
+                }
+            }
+
 
         }
 

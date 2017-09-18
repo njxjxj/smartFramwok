@@ -19,9 +19,9 @@ public class ArrayUtil {
 
     public static boolean isNotEmpty(Method[] methods) {
         if (methods == null || methods.length == 0) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     public static boolean isEmpty(Object[] array) {

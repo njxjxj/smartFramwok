@@ -6,6 +6,7 @@ import org.smartXj.framwork.bean.View;
 import org.smartXj.framwork.helper.BeanHelper;
 import org.smartXj.framwork.helper.ConfigHelper;
 import org.smartXj.framwork.helper.ControllerHelper;
+import org.smartXj.framwork.helper.IocHelper;
 import org.smartXj.framwork.util.*;
 
 import javax.servlet.*;

@@ -12,13 +12,13 @@ public class HelperLoader {
         Class<?>[] classList={
                 ClassHelper.class,
                 BeanHelper.class,
-                IocHelper.class,
-                ControllerHelper.class
+                ControllerHelper.class,
+                IocHelper.class
         };
 
         for (Class cls:classList)
         {
-            ClassUtil.loadClass(cls.getName());
+            ClassUtil.loadClass(cls.getName(),true);
         }
     }
 

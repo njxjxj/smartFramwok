@@ -16,6 +16,7 @@ public class ControllerHelper {
     private static final Map<Request, Handler> ACTION_MAP = new HashMap<Request, Handler>();
 
     static {
+        System.out.println("---------------Controller初始化-----------------");
         Set<Class<?>> controllerClassSet = ClassHelper.getControllerClassSet();
         if (CollectionUtil.isNotEmpty(controllerClassSet)) {
             for (Class<?> cls : controllerClassSet) {

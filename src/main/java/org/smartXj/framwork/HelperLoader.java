@@ -1,6 +1,5 @@
 package org.smartXj.framwork;
 
-import org.smartXj.framwork.annotation.Controller;
 import org.smartXj.framwork.helper.BeanHelper;
 import org.smartXj.framwork.helper.ClassHelper;
 import org.smartXj.framwork.helper.ControllerHelper;

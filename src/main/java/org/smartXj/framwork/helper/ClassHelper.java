@@ -15,7 +15,7 @@ public class ClassHelper {
 
     static {
         String basePackge = ConfigHelper.getAppBasePackage();
-        CLASS_SET = ClassUtil.getClassSet(basePackge); //在本来还未初始化时就加载基础包下所有的类
+        CLASS_SET = ClassUtil.getClassSet(basePackge); //在本类还未初始化时就加载基础包下所有的类
     }
 
     /**

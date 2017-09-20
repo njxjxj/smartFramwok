@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class IocHelper {
     static {
-        System.out.println("---------------IOC容器-----------------");
+        System.out.println("---------------IOC容器初始化-----------------");
         Map<Class<?>, Object> beanMap = BeanHelper.getBeanMap();
         if (CollectionUtil.isNotEmpty(beanMap)) {
             for (Map.Entry<Class<?>, Object> beanEntry : beanMap.entrySet()) {

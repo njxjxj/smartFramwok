@@ -6,10 +6,12 @@ import org.smartXj.framwork.bean.View;
 import org.smartXj.framwork.helper.BeanHelper;
 import org.smartXj.framwork.helper.ConfigHelper;
 import org.smartXj.framwork.helper.ControllerHelper;
-import org.smartXj.framwork.helper.IocHelper;
 import org.smartXj.framwork.util.*;
 
-import javax.servlet.*;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,7 +41,7 @@ public class DispatcherServlet extends HttpServlet {
         //获取请求方法与请求路径
         String requestMethod = req.getMethod();
         String requestPath = req.getPathInfo();
-        //获取action处理器
+        //获取action句柄
         Handler handler = ControllerHelper.getHandler(requestMethod, requestPath);
         if (handler != null) {
             //获取controller以及bean实例
@@ -73,7 +75,7 @@ public class DispatcherServlet extends HttpServlet {
             Param param = new Param(paramMap);
             Method actionMethod = handler.getActionMethod();
             //使用反射运行方法
-            Object result = ReflectionUtil.invokeMethod(controllerBean, actionMethod);
+            Object result = ReflectionUtil.invokeMethod(controllerBean, actionMethod,param);
             if (result instanceof View) {
                 View view = (View) result;
                 String path = view.getPath();
